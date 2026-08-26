@@ -1,0 +1,6 @@
+@GestionVideoClub_HostAddress = http://localhost:5076
+
+GET {{GestionVideoClub_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
