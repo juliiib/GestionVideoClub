@@ -12,39 +12,25 @@ namespace GestionVideoClub.Data
 
         public static Employee? GetByID(int id) => employees.FirstOrDefault(e => e.ID == id);
 
-        public static bool UpdateEmployeePhone(int id, string newPhone)
+        public static bool UpdateEmployeeContact(int id, string? newPhone, string? newAddress)
         {
             var employee = GetByID(id);
             if (employee == null) return false;
 
-            employee.UpdatePhone(newPhone);
+            if (newPhone != null) employee.UpdatePhone(newPhone);
+            if (newAddress != null) employee.UpdateAddress(newAddress);
+
             return true;
         }
 
-        public static bool UpdateEmployeeAddress(int id, string newAddress)
+        public static bool UpdateEmployeeJobDetails(int id, string? newShift, decimal? newSalary)
         {
             var employee = GetByID(id);
             if (employee == null) return false;
 
-            employee.UpdateAddress(newAddress);
-            return true;
-        }
+            if (newShift != null) employee.UpdateShift(newShift);
+            if (newSalary.HasValue && newSalary > 0) employee.UpdateSalary(newSalary.Value);
 
-        public static bool UpdateEmployeeShift(int id, string newShift)
-        {
-            var employee = GetByID(id);
-            if (employee == null) return false;
-
-            employee.UpdateShift(newShift);
-            return true;
-        }
-
-        public static bool UpdateEmployeeSalary(int id, decimal newSalary)
-        {
-            var employee = GetByID(id);
-            if (employee == null) return false;
-
-            employee.UpdateSalary(newSalary);
             return true;
         }
     }

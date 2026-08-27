@@ -12,21 +12,14 @@ namespace GestionVideoClub.Data
 
         public static Client? GetByID(int id) => clients.FirstOrDefault(c => c.ID == id);
 
-        public static bool UpdateClientPhone(int id, string newPhone)
+        public static bool UpdateClientContact(int id, string newPhone, string newAddress)
         {
             var client = GetByID(id);
             if (client == null) return false;
 
-            client.UpdatePhone(newPhone);
-            return true;
-        }
+            if (newPhone != null) client.UpdatePhone(newPhone);
+            if (newAddress != null) client.UpdateAddress(newAddress);
 
-        public static bool UpdateClientAddress(int id, string newAddress)
-        {
-            var client = GetByID(id);
-            if (client == null) return false;
-
-            client.UpdateAddress(newAddress);
             return true;
         }
     }

@@ -2,7 +2,7 @@
 {
     public class Fine
     {
-        private static int nextID = 0;
+        private static int nextID = 1;
 
         public enum FineMotive {LateReturn, DamagedItem, LostItem, Other}
         public enum FineState { Paid, Unpaid }

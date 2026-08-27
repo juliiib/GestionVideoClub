@@ -2,7 +2,7 @@
 {
     public class Rent
     {
-        private static int nextID = 0;
+        private static int nextID = 1;
 
         public enum RentState { Active, Returned, Overdue }
 

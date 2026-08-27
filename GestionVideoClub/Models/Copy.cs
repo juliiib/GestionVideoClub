@@ -2,7 +2,7 @@
 {
     public class Copy
     {
-        private static int nextID = 0;
+        private static int nextID = 1;
 
         public enum CopyState { healthy, damaged }
 

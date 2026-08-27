@@ -2,7 +2,7 @@
 {
     public abstract class Person
     {
-        private static int nextID = 0;
+        private static int nextID = 1;
 
         public int ID { get; }
         public string Name { get; }
