@@ -41,5 +41,23 @@
             Phone = phone;
             Address = address;
         }
+
+        public void UpdatePhone(string newPhone)
+        {
+            if (string.IsNullOrWhiteSpace(newPhone))
+            {
+                throw new ArgumentException("New phone cannot be null or empty.", nameof(newPhone));
+            }
+            Phone = newPhone;
+        }
+
+        public void UpdateAddress(string newAddress)
+        {
+            if (string.IsNullOrWhiteSpace(newAddress))
+            {
+                throw new ArgumentException("New address cannot be null or empty.", nameof(newAddress));
+            }
+            Address = newAddress;
+        }
     }
 }

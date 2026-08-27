@@ -21,6 +21,24 @@
             Shift = shift;
             Salary = salary;
         }
+
+        public void UpdateShift(string newShift)
+        {
+            if (string.IsNullOrWhiteSpace(newShift))
+            {
+                throw new ArgumentException("New shift cannot be null or empty.", nameof(newShift));
+            }
+            Shift = newShift;
+        }
+
+        public void UpdateSalary(decimal newSalary)
+        {
+            if (newSalary <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(newSalary), "New salary must be greater than zero.");
+            }
+            Salary = newSalary;
+        }
     }
 }
 

@@ -33,6 +33,10 @@
             Employee = employee ?? throw new ArgumentNullException(nameof(employee), "Employee cannot be null.");
         }
 
-
+        public void ReturnCopy(RentState newState, DateTime returnDate)
+        {
+            State = newState;
+            ReturnDate = returnDate;
+        }
     }
 }

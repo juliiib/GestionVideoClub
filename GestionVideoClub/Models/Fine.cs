@@ -28,5 +28,14 @@
             State = FineState.Unpaid;
             Rent = rent ?? throw new ArgumentNullException(nameof(rent), "A fine must belong to a rent.");
         }
+
+        public void PayFine()
+        {
+            if (State == FineState.Paid)
+            {
+                throw new InvalidOperationException("The fine has already been paid.");
+            }
+            State = FineState.Paid;
+        }
     }
 }
