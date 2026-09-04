@@ -2,7 +2,7 @@
 {
     public class Rent
     {
-        private static int nextID = 0;
+        private static int nextID = 1;
 
         public enum RentState { Active, Returned, Overdue }
 
@@ -33,6 +33,10 @@
             Employee = employee ?? throw new ArgumentNullException(nameof(employee), "Employee cannot be null.");
         }
 
-
+        public void ReturnCopy(RentState newState, DateTime returnDate)
+        {
+            State = newState;
+            ReturnDate = returnDate;
+        }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class Fine
     {
-        private static int nextID = 0;
+        private static int nextID = 1;
 
         public enum FineMotive {LateReturn, DamagedItem, LostItem, Other}
         public enum FineState { Paid, Unpaid }
@@ -27,6 +27,15 @@
             Date = date;
             State = FineState.Unpaid;
             Rent = rent ?? throw new ArgumentNullException(nameof(rent), "A fine must belong to a rent.");
+        }
+
+        public void PayFine()
+        {
+            if (State == FineState.Paid)
+            {
+                throw new InvalidOperationException("The fine has already been paid.");
+            }
+            State = FineState.Paid;
         }
     }
 }

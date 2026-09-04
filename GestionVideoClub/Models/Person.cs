@@ -2,7 +2,7 @@
 {
     public abstract class Person
     {
-        private static int nextID = 0;
+        private static int nextID = 1;
 
         public int ID { get; }
         public string Name { get; }
@@ -40,6 +40,24 @@
             DNI = dni;
             Phone = phone;
             Address = address;
+        }
+
+        public void UpdatePhone(string newPhone)
+        {
+            if (string.IsNullOrWhiteSpace(newPhone))
+            {
+                throw new ArgumentException("New phone cannot be null or empty.", nameof(newPhone));
+            }
+            Phone = newPhone;
+        }
+
+        public void UpdateAddress(string newAddress)
+        {
+            if (string.IsNullOrWhiteSpace(newAddress))
+            {
+                throw new ArgumentException("New address cannot be null or empty.", nameof(newAddress));
+            }
+            Address = newAddress;
         }
     }
 }

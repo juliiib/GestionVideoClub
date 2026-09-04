@@ -2,7 +2,7 @@
 {
     public class Copy
     {
-        private static int nextID = 0;
+        private static int nextID = 1;
 
         public enum CopyState { healthy, damaged }
 
@@ -34,6 +34,21 @@
             IsAvailable = isAvailable;
             Movie = movie ?? throw new ArgumentNullException(nameof(movie), "Movie cannot be null.");
             Format = format ?? throw new ArgumentNullException(nameof(format), "Format cannot be null.");
+        }
+
+        public void SetState(CopyState newState)
+        {
+            State = newState;
+
+            if (newState == CopyState.damaged )
+            {
+                IsAvailable = false;
+            }
+        }
+
+        public void SetAvailability(bool availability)
+        {
+            IsAvailable = availability;
         }
     }
 }
