@@ -1,3 +1,8 @@
+using GestionVideoClub.Application.Interfaces;
+using GestionVideoClub.Application.Services;
+using GestionVideoClub.Domain.Interfaces;
+using GestionVideoClub.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IClientService, ClientService>();
 
 var app = builder.Build();
 

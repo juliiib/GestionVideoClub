@@ -1,4 +1,4 @@
-﻿namespace GestionVideoClub.Models
+﻿namespace GestionVideoClub.Domain.Entities
 {
     public abstract class Person
     {
