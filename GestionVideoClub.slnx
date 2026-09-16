@@ -1,3 +1,6 @@
 <Solution>
-  <Project Path="GestionVideoClub/GestionVideoClub.csproj" />
+  <Project Path="GestionVideoClub.Application/GestionVideoClub.Application.csproj" Id="ad4f7599-d23f-4ebc-92c5-24a6d70b3de7" />
+  <Project Path="GestionVideoClub.Domain/GestionVideoClub.Domain.csproj" Id="5c90e52a-2a2a-4e6c-a211-bac7617fba9d" />
+  <Project Path="GestionVideoClub.Infrastructure/GestionVideoClub.Infrastructure.csproj" Id="f52fd4d1-cd85-44e0-8d14-67569bf80bc9" />
+  <Project Path="GestionVideoClub/GestionVideoClub.Presentation.csproj" Id="be6e2ac4-2b30-43e9-bdda-2f7f7f56804c" />
 </Solution>

@@ -1,9 +1,7 @@
-﻿using GestionVideoClub.Data;
-using GestionVideoClub.DTOs;
-using GestionVideoClub.Models;
+﻿using GestionVideoClub.Application.DTOs;
+using GestionVideoClub.Application.Interfaces;
+using GestionVideoClub.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Xml.Linq;
 
 namespace GestionVideoClub.Controllers
 {
@@ -11,14 +9,19 @@ namespace GestionVideoClub.Controllers
     [ApiController]
     public class ClientsController : ControllerBase
     {
+        private readonly IClientService ClientRepository;
+
+        public ClientsController(IClientService clientService)
+        {
+            ClientRepository = clientService;
+        }
+
         [HttpPost]
         public ActionResult<Client> Create([FromBody] CreateClientRequest request)
         {
             try
             {
-                var client = new Client(request.Name, request.LastName, request.Dni, request.Phone, request.Address);
-
-                ClientRepository.AddClient(client);
+                Client client = ClientRepository.AddClient(request);
 
                 return CreatedAtAction(nameof(GetById), new { id = client.ID }, client);
             }
@@ -31,7 +34,7 @@ namespace GestionVideoClub.Controllers
         [HttpGet]
         public ActionResult<IReadOnlyList<Client>> GetAll()
         {
-            var clients = ClientRepository.GetAll();
+            var clients = ClientRepository.GetAllClients();
             if (!clients.Any())
             {
                 return NotFound("No clients found.");
@@ -42,7 +45,7 @@ namespace GestionVideoClub.Controllers
         [HttpGet("{id}")]
         public ActionResult<Client> GetById([FromRoute] int id)
         {
-            var client = ClientRepository.GetByID(id);
+            var client = ClientRepository.GetClientById(id);
             if (client == null)
             {
                 return NotFound("Client not found.");
@@ -53,7 +56,7 @@ namespace GestionVideoClub.Controllers
         [HttpPatch("{id}")]
         public ActionResult Update([FromRoute] int id, [FromBody] UpdateClientRequest request)
         {
-            if (!ClientRepository.UpdateClientContact(id, request.Phone, request.Address))
+            if (!ClientRepository.UpdateClient(id, request))
             {
                 return NotFound("Client not found.");
             }
