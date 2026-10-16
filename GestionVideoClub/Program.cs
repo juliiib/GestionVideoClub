@@ -20,6 +20,9 @@ builder.Services.AddScoped<IFormatService, FormatService>();
 builder.Services.AddScoped<ICopyRepository, CopyRepository>();
 builder.Services.AddScoped<ICopyService, CopyService>();
 
+builder.Services.AddScoped<IRentRepository, RentRepository>();
+builder.Services.AddScoped<IRentService, RentService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
