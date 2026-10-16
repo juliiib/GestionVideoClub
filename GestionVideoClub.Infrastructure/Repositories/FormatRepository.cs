@@ -1,15 +1,13 @@
-﻿//using GestionVideoClub.Models;
+using GestionVideoClub.Domain.Entities;
+using GestionVideoClub.Domain.Interfaces;
 
-//namespace GestionVideoClub.Data
-//{
-//    public class FormatRepository
-//    {
-//        private static readonly List<Format> formats = new List<Format>();
-
-//        public static void AddFormat(Format format) => formats.Add(format);
-
-//        public static IReadOnlyList<Format> GetAll() => formats.AsReadOnly();
-
-//        public static Format? GetByID(int id) => formats.FirstOrDefault(f => f.ID == id);
-//    }
-//}
+namespace GestionVideoClub.Infrastructure.Repositories
+{
+    public class FormatRepository : IFormatRepository
+    {
+        private readonly List<Format> formats = new List<Format>();
+        public void AddFormat(Format format) => formats.Add(format);
+        public IReadOnlyList<Format> GetAllFormats() => formats.AsReadOnly();
+        public Format? GetFormatById(int id) => formats.FirstOrDefault(f => f.ID == id);
+    }
+}
