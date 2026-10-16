@@ -1,16 +1,13 @@
-﻿//using GestionVideoClub.Models;
+﻿using GestionVideoClub.Domain.Entities;
+using GestionVideoClub.Domain.Interfaces;
 
-//namespace GestionVideoClub.Data
-//{
-//    public static class MovieRepository
-//    {
-//        private static readonly List<Movie> movies = new List<Movie>();
-
-//        public static void AddMovie(Movie movie) => movies.Add(movie);
-
-//        public static IReadOnlyList<Movie> GetAll() => movies.AsReadOnly();
-
-//        public static Movie? GetByID(int id) => movies.FirstOrDefault(m => m.ID == id);
- 
-//    }
-//}
+namespace GestionVideoClub.Infrastructure.Repositories
+{
+    public class MovieRepository : IMovieRepository
+    {
+        private readonly List<Movie> movies = new List<Movie>();
+        public void AddMovie(Movie movie) => movies.Add(movie);
+        public IReadOnlyList<Movie> GetAllMovies() => movies.AsReadOnly();
+        public Movie? GetMovieById(int id) => movies.FirstOrDefault(m => m.ID == id);
+    }
+}
