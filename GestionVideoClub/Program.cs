@@ -17,6 +17,9 @@ builder.Services.AddScoped<IMovieService, MovieService>();
 builder.Services.AddScoped<IFormatRepository, FormatRepository>();
 builder.Services.AddScoped<IFormatService, FormatService>();
 
+builder.Services.AddScoped<ICopyRepository, CopyRepository>();
+builder.Services.AddScoped<ICopyService, CopyService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
