@@ -14,6 +14,9 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IMovieService, MovieService>();
 
+builder.Services.AddScoped<IFormatRepository, FormatRepository>();
+builder.Services.AddScoped<IFormatService, FormatService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
