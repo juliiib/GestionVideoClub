@@ -9,11 +9,11 @@ namespace GestionVideoClub.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly IMovieService MovieRepository;
+        private readonly IMovieService movieService;
 
         public MoviesController(IMovieService movieService)
         {
-            MovieRepository = movieService;
+            this.movieService = movieService;
         }
 
         [HttpPost]
@@ -21,11 +21,11 @@ namespace GestionVideoClub.Controllers
         {
             try
             {
-                var movie = MovieRepository.AddMovie(request);
+                var movie = movieService.AddMovie(request);
 
-                return CreatedAtAction(nameof(GetById), new { id = movie.ID }, movie);
+                return CreatedAtAction(nameof(GetById), new { id = movie.Id }, movie);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -34,7 +34,7 @@ namespace GestionVideoClub.Controllers
         [HttpGet]
         public ActionResult<IReadOnlyList<Movie>> GetAll()
         {
-            var movies = MovieRepository.GetAllMovies();
+            var movies = movieService.GetAllMovies();
             if (!movies.Any())
             {
                 return NotFound("No movies found.");
@@ -43,9 +43,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Movie> GetById([FromRoute] int id)
+        public ActionResult<Movie> GetById([FromRoute] Guid id)
         {
-            var movie = MovieRepository.GetMovieById(id);
+            var movie = movieService.GetMovieById(id);
             if (movie == null)
             {
                 return NotFound("Movie not found.");

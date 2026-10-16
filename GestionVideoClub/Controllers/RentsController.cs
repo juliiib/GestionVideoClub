@@ -9,11 +9,11 @@ namespace GestionVideoClub.Controllers
     [ApiController]
     public class RentsController : ControllerBase
     {
-        private readonly IRentService RentRepository;
+        private readonly IRentService rentService;
 
         public RentsController(IRentService rentService)
         {
-            RentRepository = rentService;
+            this.rentService = rentService;
         }
 
         [HttpPost]
@@ -21,19 +21,27 @@ namespace GestionVideoClub.Controllers
         {
             try
             {
-                var rent = RentRepository.AddRent(request);
-                return CreatedAtAction(nameof(GetById), new { id = rent.ID }, rent);
+                var rent = rentService.AddRent(request);
+                return CreatedAtAction(nameof(GetById), new { id = rent.Id }, rent);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
             }
         }
 
         [HttpGet]
         public ActionResult<IReadOnlyList<Rent>> GetAll()
         {
-            var rents = RentRepository.GetAllRents();
+            var rents = rentService.GetAllRents();
             if (!rents.Any())
             {
                 return NotFound("No rents found.");
@@ -42,9 +50,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Rent> GetById([FromRoute] int id)
+        public ActionResult<Rent> GetById([FromRoute] Guid id)
         {
-            var rent = RentRepository.GetRentById(id);
+            var rent = rentService.GetRentById(id);
             if (rent == null)
             {
                 return NotFound("Rent not found.");
@@ -53,9 +61,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/return")]
-        public ActionResult ReturnCopy([FromRoute] int id, [FromBody] ReturnRentRequest request)
+        public ActionResult ReturnCopy([FromRoute] Guid id, [FromBody] ReturnRentRequest request)
         {
-            if (!RentRepository.ReturnCopy(id, request))
+            if (!rentService.ReturnCopy(id, request))
             {
                 return NotFound("Rent not found.");
             }

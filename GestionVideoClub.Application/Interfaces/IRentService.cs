@@ -7,7 +7,7 @@ namespace GestionVideoClub.Application.Interfaces
     {
         Rent AddRent(CreateRentRequest request);
         IReadOnlyList<Rent> GetAllRents();
-        Rent? GetRentById(int id);
-        bool ReturnCopy(int id, ReturnRentRequest request);
+        Rent? GetRentById(Guid id);
+        bool ReturnCopy(Guid id, ReturnRentRequest request);
     }
 }

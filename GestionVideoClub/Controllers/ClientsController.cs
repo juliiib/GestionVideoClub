@@ -9,11 +9,11 @@ namespace GestionVideoClub.Controllers
     [ApiController]
     public class ClientsController : ControllerBase
     {
-        private readonly IClientService ClientRepository;
+        private readonly IClientService clientService;
 
         public ClientsController(IClientService clientService)
         {
-            ClientRepository = clientService;
+            this.clientService = clientService;
         }
 
         [HttpPost]
@@ -21,11 +21,11 @@ namespace GestionVideoClub.Controllers
         {
             try
             {
-                Client client = ClientRepository.AddClient(request);
+                Client client = clientService.AddClient(request);
 
-                return CreatedAtAction(nameof(GetById), new { id = client.ID }, client);
+                return CreatedAtAction(nameof(GetById), new { id = client.Id }, client);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -34,7 +34,7 @@ namespace GestionVideoClub.Controllers
         [HttpGet]
         public ActionResult<IReadOnlyList<Client>> GetAll()
         {
-            var clients = ClientRepository.GetAllClients();
+            var clients = clientService.GetAllClients();
             if (!clients.Any())
             {
                 return NotFound("No clients found.");
@@ -43,9 +43,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Client> GetById([FromRoute] int id)
+        public ActionResult<Client> GetById([FromRoute] Guid id)
         {
-            var client = ClientRepository.GetClientById(id);
+            var client = clientService.GetClientById(id);
             if (client == null)
             {
                 return NotFound("Client not found.");
@@ -54,9 +54,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}")]
-        public ActionResult Update([FromRoute] int id, [FromBody] UpdateClientRequest request)
+        public ActionResult Update([FromRoute] Guid id, [FromBody] UpdateClientRequest request)
         {
-            if (!ClientRepository.UpdateClient(id, request))
+            if (!clientService.UpdateClient(id, request))
             {
                 return NotFound("Client not found.");
             }

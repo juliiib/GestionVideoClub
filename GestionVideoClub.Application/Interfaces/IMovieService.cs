@@ -7,6 +7,6 @@ namespace GestionVideoClub.Application.Interfaces
     {
         Movie AddMovie(CreateMovieRequest request);
         IReadOnlyList<Movie> GetAllMovies();
-        Movie? GetMovieById(int id);
+        Movie? GetMovieById(Guid id);
     }
 }

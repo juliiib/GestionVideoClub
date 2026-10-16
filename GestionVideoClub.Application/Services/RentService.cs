@@ -22,34 +22,33 @@ namespace GestionVideoClub.Application.Services
 
         public Rent AddRent(CreateRentRequest request)
         {
-            var copy = copyRepository.GetCopyById(request.CopyId);
-            if (copy == null)
+            var copy = copyRepository.GetCopyById(request.CopyId)
+                ?? throw new KeyNotFoundException("Copy not found.");
+
+            if (!copy.IsAvailable)
             {
-                throw new ArgumentException("Copy not found.", nameof(request.CopyId));
+                throw new InvalidOperationException("The copy is not available.");
             }
 
-            var client = clientRepository.GetClientById(request.ClientId);
-            if (client == null)
-            {
-                throw new ArgumentException("Client not found.", nameof(request.ClientId));
-            }
+            var client = clientRepository.GetClientById(request.ClientId)
+                ?? throw new KeyNotFoundException("Client not found.");
 
-            var employee = employeeRepository.GetEmployeeById(request.EmployeeId);
-            if (employee == null)
-            {
-                throw new ArgumentException("Employee not found.", nameof(request.EmployeeId));
-            }
+            var employee = employeeRepository.GetEmployeeById(request.EmployeeId)
+                ?? throw new KeyNotFoundException("Employee not found.");
 
             var rent = new Rent(request.RentDate, request.ExpectedReturnDate, copy, client, employee);
+            copy.SetAvailability(false);
+
             rentRepository.AddRent(rent);
+            rentRepository.SaveChanges();
             return rent;
         }
 
         public IReadOnlyList<Rent> GetAllRents() => rentRepository.GetAllRents();
 
-        public Rent? GetRentById(int id) => rentRepository.GetRentById(id);
+        public Rent? GetRentById(Guid id) => rentRepository.GetRentById(id);
 
-        public bool ReturnCopy(int id, ReturnRentRequest request)
+        public bool ReturnCopy(Guid id, ReturnRentRequest request)
         {
             var rent = rentRepository.GetRentById(id);
             if (rent == null || rent.State != Rent.RentState.Active)
@@ -66,7 +65,9 @@ namespace GestionVideoClub.Application.Services
                 rent.ReturnCopy(Rent.RentState.Returned, request.ReturnDate);
             }
 
-            rentRepository.UpdateRent(rent);
+            rent.Copy.SetAvailability(true);
+
+            rentRepository.SaveChanges();
             return true;
         }
     }

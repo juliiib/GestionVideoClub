@@ -2,12 +2,10 @@
 {
     public class Format
     {
-        private static int nextID = 1;
-
-        public int ID { get; }
-        public string Name { get; }
-        public int ImageQuality { get; }
-        public int AdditionalCost { get; }
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public int ImageQuality { get; private set; }
+        public int AdditionalCost { get; private set; }
 
         public Format(string name, int imageQuality, int additionalCost)
         {
@@ -24,10 +22,15 @@
                 throw new ArgumentOutOfRangeException(nameof(additionalCost), "Additional cost cannot be negative.");
             }
 
-            ID = nextID++;
+            Id = Guid.NewGuid();
             Name = name;
             ImageQuality = imageQuality;
             AdditionalCost = additionalCost;
+        }
+
+        private Format()
+        {
+            Name = string.Empty;
         }
     }
 }

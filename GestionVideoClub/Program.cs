@@ -1,15 +1,27 @@
 using GestionVideoClub.Application.Interfaces;
 using GestionVideoClub.Application.Services;
 using GestionVideoClub.Domain.Interfaces;
+using GestionVideoClub.Infrastructure.Persistence;
 using GestionVideoClub.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddOpenApi();
+
+var connectionString = builder.Configuration.GetConnectionString("GestionVideoClubDb")
+    ?? throw new InvalidOperationException("La connection string 'GestionVideoClubDb' no está configurada.");
+
+builder.Services.AddDbContext<VideoClubDbContext>(o => o.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IClientService, ClientService>();
+
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IMovieService, MovieService>();

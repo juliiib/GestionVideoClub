@@ -18,11 +18,12 @@ namespace GestionVideoClub.Application.Services
         {
             var format = new Format(request.Name, request.ImageQuality, request.AdditionalCost);
             formatRepository.AddFormat(format);
+            formatRepository.SaveChanges();
             return format;
         }
 
         public IReadOnlyList<Format> GetAllFormats() => formatRepository.GetAllFormats();
 
-        public Format? GetFormatById(int id) => formatRepository.GetFormatById(id);
+        public Format? GetFormatById(Guid id) => formatRepository.GetFormatById(id);
     }
 }

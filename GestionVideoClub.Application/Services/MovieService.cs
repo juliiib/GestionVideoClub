@@ -18,11 +18,12 @@ namespace GestionVideoClub.Application.Services
         {
             var movie = new Movie(request.Name, request.Genre, request.Duration, request.Clasification, request.YearRelease);
             movieRepository.AddMovie(movie);
+            movieRepository.SaveChanges();
             return movie;
         }
 
         public IReadOnlyList<Movie> GetAllMovies() => movieRepository.GetAllMovies();
 
-        public Movie? GetMovieById(int id) => movieRepository.GetMovieById(id);
+        public Movie? GetMovieById(Guid id) => movieRepository.GetMovieById(id);
     }
 }

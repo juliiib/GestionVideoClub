@@ -7,8 +7,8 @@ namespace GestionVideoClub.Application.Interfaces
     {
         Copy AddCopy(CreateCopyRequest request);
         IReadOnlyList<Copy> GetAllCopies();
-        Copy? GetCopyById(int id);
-        bool UpdateCopyState(int id, UpdateCopyStateRequest request);
-        bool UpdateCopyAvailability(int id, UpdateCopyAvailabilityRequest request);
+        Copy? GetCopyById(Guid id);
+        bool UpdateCopyState(Guid id, UpdateCopyStateRequest request);
+        bool UpdateCopyAvailability(Guid id, UpdateCopyAvailabilityRequest request);
     }
 }

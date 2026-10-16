@@ -18,22 +18,20 @@ namespace GestionVideoClub.Application.Services
 
         public Fine AddFine(CreateFineRequest request)
         {
-            var rent = rentRepository.GetRentById(request.RentId);
-            if (rent == null)
-            {
-                throw new ArgumentException("Rent not found.", nameof(request.RentId));
-            }
+            var rent = rentRepository.GetRentById(request.RentId)
+                ?? throw new KeyNotFoundException("Rent not found.");
 
             var fine = new Fine(request.Motive, request.Amount, request.Date, rent);
             fineRepository.AddFine(fine);
+            fineRepository.SaveChanges();
             return fine;
         }
 
         public IReadOnlyList<Fine> GetAllFines() => fineRepository.GetAllFines();
 
-        public Fine? GetFineById(int id) => fineRepository.GetFineById(id);
+        public Fine? GetFineById(Guid id) => fineRepository.GetFineById(id);
 
-        public bool PayFine(int id)
+        public bool PayFine(Guid id)
         {
             var fine = fineRepository.GetFineById(id);
             if (fine == null)
@@ -44,7 +42,7 @@ namespace GestionVideoClub.Application.Services
             try
             {
                 fine.PayFine();
-                fineRepository.UpdateFine(fine);
+                fineRepository.SaveChanges();
                 return true;
             }
             catch (InvalidOperationException)

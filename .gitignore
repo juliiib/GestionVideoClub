@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Documentacion de persistencia generada localmente
+docs/PERSISTENCIA.md

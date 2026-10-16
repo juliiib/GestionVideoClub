@@ -6,6 +6,7 @@ namespace GestionVideoClub.Domain.Interfaces
     {
         void AddMovie(Movie movie);
         IReadOnlyList<Movie> GetAllMovies();
-        Movie? GetMovieById(int id);
+        Movie? GetMovieById(Guid id);
+        void SaveChanges();
     }
 }

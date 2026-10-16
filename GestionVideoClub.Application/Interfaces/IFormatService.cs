@@ -7,6 +7,6 @@ namespace GestionVideoClub.Application.Interfaces
     {
         Format AddFormat(CreateFormatRequest request);
         IReadOnlyList<Format> GetAllFormats();
-        Format? GetFormatById(int id);
+        Format? GetFormatById(Guid id);
     }
 }

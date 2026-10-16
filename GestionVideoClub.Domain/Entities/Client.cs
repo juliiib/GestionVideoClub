@@ -6,5 +6,9 @@
             : base(name, lastName, dni, phone, address)
         {
         }
+
+        private Client()
+        {
+        }
     }
 }
