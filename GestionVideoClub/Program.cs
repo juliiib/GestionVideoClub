@@ -23,6 +23,9 @@ builder.Services.AddScoped<ICopyService, CopyService>();
 builder.Services.AddScoped<IRentRepository, RentRepository>();
 builder.Services.AddScoped<IRentService, RentService>();
 
+builder.Services.AddScoped<IFineRepository, FineRepository>();
+builder.Services.AddScoped<IFineService, FineService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
