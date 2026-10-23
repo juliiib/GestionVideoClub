@@ -1,14 +1,21 @@
 using GestionVideoClub.Domain.Entities;
 using GestionVideoClub.Domain.Interfaces;
+using GestionVideoClub.Infrastructure.Persistence;
 
 namespace GestionVideoClub.Infrastructure.Repositories
 {
     public class RentRepository : IRentRepository
     {
-        private readonly List<Rent> rents = new List<Rent>();
-        public void AddRent(Rent rent) => rents.Add(rent);
-        public IReadOnlyList<Rent> GetAllRents() => rents.AsReadOnly();
-        public Rent? GetRentById(int id) => rents.FirstOrDefault(r => r.ID == id);
-        public void UpdateRent(Rent rent) => rents[rents.IndexOf(rent)] = rent;
+        private readonly VideoClubDbContext context;
+
+        public RentRepository(VideoClubDbContext context)
+        {
+            this.context = context;
+        }
+
+        public void AddRent(Rent rent) => context.Rents.Add(rent);
+        public IReadOnlyList<Rent> GetAllRents() => context.Rents.ToList();
+        public Rent? GetRentById(Guid id) => context.Rents.FirstOrDefault(r => r.Id == id);
+        public void SaveChanges() => context.SaveChanges();
     }
 }

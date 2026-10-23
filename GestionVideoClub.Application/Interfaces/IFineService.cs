@@ -7,7 +7,7 @@ namespace GestionVideoClub.Application.Interfaces
     {
         Fine AddFine(CreateFineRequest request);
         IReadOnlyList<Fine> GetAllFines();
-        Fine? GetFineById(int id);
-        bool PayFine(int id);
+        Fine? GetFineById(Guid id);
+        bool PayFine(Guid id);
     }
 }

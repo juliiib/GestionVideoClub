@@ -1,15 +1,21 @@
 using GestionVideoClub.Domain.Entities;
 using GestionVideoClub.Domain.Interfaces;
+using GestionVideoClub.Infrastructure.Persistence;
 
 namespace GestionVideoClub.Infrastructure.Repositories
 {
     public class CopyRepository : ICopyRepository
     {
-        private readonly List<Copy> copies = new List<Copy>();
-        public void AddCopy(Copy copy) => copies.Add(copy);
-        public IReadOnlyList<Copy> GetAllCopies() => copies.AsReadOnly();
-        public Copy? GetCopyById(int id) => copies.FirstOrDefault(c => c.ID == id);
-        public void UpdateCopyState(Copy copy) => copies[copies.IndexOf(copy)] = copy;
-        public void UpdateCopyAvailability(Copy copy) => copies[copies.IndexOf(copy)] = copy;
+        private readonly VideoClubDbContext context;
+
+        public CopyRepository(VideoClubDbContext context)
+        {
+            this.context = context;
+        }
+
+        public void AddCopy(Copy copy) => context.Copies.Add(copy);
+        public IReadOnlyList<Copy> GetAllCopies() => context.Copies.ToList();
+        public Copy? GetCopyById(Guid id) => context.Copies.FirstOrDefault(c => c.Id == id);
+        public void SaveChanges() => context.SaveChanges();
     }
 }

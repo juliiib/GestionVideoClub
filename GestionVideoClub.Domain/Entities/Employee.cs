@@ -2,13 +2,13 @@
 {
     public class Employee : Person
     {
-        public string Shift {  get; private set; }
+        public string Shift { get; private set; }
         public decimal Salary { get; private set; }
-        
+
         public Employee(string name, string lastName, int dni, string phone, string address, string shift, decimal salary)
             : base(name, lastName, dni, phone, address)
-        {  
-            
+        {
+
             if (string.IsNullOrWhiteSpace(shift))
             {
                 throw new ArgumentException("Shift cannot be null or empty.", nameof(shift));
@@ -20,6 +20,11 @@
 
             Shift = shift;
             Salary = salary;
+        }
+
+        private Employee()
+        {
+            Shift = string.Empty;
         }
 
         public void UpdateShift(string newShift)
@@ -41,4 +46,3 @@
         }
     }
 }
-

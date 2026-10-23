@@ -9,11 +9,11 @@ namespace GestionVideoClub.Controllers
     [ApiController]
     public class FormatsController : ControllerBase
     {
-        private readonly IFormatService FormatRepository;
+        private readonly IFormatService formatService;
 
         public FormatsController(IFormatService formatService)
         {
-            FormatRepository = formatService;
+            this.formatService = formatService;
         }
 
         [HttpPost]
@@ -21,10 +21,10 @@ namespace GestionVideoClub.Controllers
         {
             try
             {
-                var format = FormatRepository.AddFormat(request);
-                return CreatedAtAction(nameof(GetById), new { id = format.ID }, format);
+                var format = formatService.AddFormat(request);
+                return CreatedAtAction(nameof(GetById), new { id = format.Id }, format);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -33,7 +33,7 @@ namespace GestionVideoClub.Controllers
         [HttpGet]
         public ActionResult<IReadOnlyList<Format>> GetAll()
         {
-            var formats = FormatRepository.GetAllFormats();
+            var formats = formatService.GetAllFormats();
             if (!formats.Any())
             {
                 return NotFound("No formats found.");
@@ -42,9 +42,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Format> GetById([FromRoute] int id)
+        public ActionResult<Format> GetById([FromRoute] Guid id)
         {
-            var format = FormatRepository.GetFormatById(id);
+            var format = formatService.GetFormatById(id);
             if (format == null)
             {
                 return NotFound("Format not found.");

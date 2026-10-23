@@ -7,7 +7,7 @@ namespace GestionVideoClub.Application.Interfaces
     {
         Client AddClient(CreateClientRequest request);
         IReadOnlyList<Client> GetAllClients();
-        Client? GetClientById(int id);
-        bool UpdateClient(int id, UpdateClientRequest request);
+        Client? GetClientById(Guid id);
+        bool UpdateClient(Guid id, UpdateClientRequest request);
     }
 }

@@ -1,8 +1,5 @@
 ﻿using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GestionVideoClub.Application.Interfaces
 {
@@ -10,8 +7,8 @@ namespace GestionVideoClub.Application.Interfaces
     {
         Employee AddEmployee(CreateEmployeeRequest request);
         IReadOnlyList<Employee> GetAllEmployees();
-        Employee? GetEmployeeById(int id);
-        bool UpdateEmployeeContact(int id, UpdateEmployeeContactRequest request);
-        bool UpdateEmployeeJobDetails(int id, UpdateEmployeeJobDetailsRequest request);
+        Employee? GetEmployeeById(Guid id);
+        bool UpdateEmployeeContact(Guid id, UpdateEmployeeContactRequest request);
+        bool UpdateEmployeeJobDetails(Guid id, UpdateEmployeeJobDetailsRequest request);
     }
 }

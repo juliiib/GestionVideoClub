@@ -2,12 +2,10 @@
 {
     public abstract class Person
     {
-        private static int nextID = 1;
-
-        public int ID { get; }
-        public string Name { get; }
-        public string LastName { get; }
-        public int DNI { get; }
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string LastName { get; private set; }
+        public int DNI { get; private set; }
         public string Phone { get; private set; }
         public string Address { get; private set; }
 
@@ -34,12 +32,20 @@
                 throw new ArgumentException("Address cannot be null or empty.", nameof(address));
             }
 
-            ID = nextID++;
+            Id = Guid.NewGuid();
             Name = name;
             LastName = lastName;
             DNI = dni;
             Phone = phone;
             Address = address;
+        }
+
+        protected Person()
+        {
+            Name = string.Empty;
+            LastName = string.Empty;
+            Phone = string.Empty;
+            Address = string.Empty;
         }
 
         public void UpdatePhone(string newPhone)

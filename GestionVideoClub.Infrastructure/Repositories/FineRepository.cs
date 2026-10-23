@@ -1,14 +1,21 @@
 using GestionVideoClub.Domain.Entities;
 using GestionVideoClub.Domain.Interfaces;
+using GestionVideoClub.Infrastructure.Persistence;
 
 namespace GestionVideoClub.Infrastructure.Repositories
 {
     public class FineRepository : IFineRepository
     {
-        private readonly List<Fine> fines = new List<Fine>();
-        public void AddFine(Fine fine) => fines.Add(fine);
-        public IReadOnlyList<Fine> GetAllFines() => fines.AsReadOnly();
-        public Fine? GetFineById(int id) => fines.FirstOrDefault(f => f.ID == id);
-        public void UpdateFine(Fine fine) => fines[fines.IndexOf(fine)] = fine;
+        private readonly VideoClubDbContext context;
+
+        public FineRepository(VideoClubDbContext context)
+        {
+            this.context = context;
+        }
+
+        public void AddFine(Fine fine) => context.Fines.Add(fine);
+        public IReadOnlyList<Fine> GetAllFines() => context.Fines.ToList();
+        public Fine? GetFineById(Guid id) => context.Fines.FirstOrDefault(f => f.Id == id);
+        public void SaveChanges() => context.SaveChanges();
     }
 }

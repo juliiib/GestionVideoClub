@@ -9,11 +9,11 @@ namespace GestionVideoClub.Controllers
     [ApiController]
     public class FinesController : ControllerBase
     {
-        private readonly IFineService FineRepository;
+        private readonly IFineService fineService;
 
         public FinesController(IFineService fineService)
         {
-            FineRepository = fineService;
+            this.fineService = fineService;
         }
 
         [HttpPost]
@@ -21,19 +21,23 @@ namespace GestionVideoClub.Controllers
         {
             try
             {
-                var fine = FineRepository.AddFine(request);
-                return CreatedAtAction(nameof(GetById), new { id = fine.ID }, fine);
+                var fine = fineService.AddFine(request);
+                return CreatedAtAction(nameof(GetById), new { id = fine.Id }, fine);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
         }
 
         [HttpGet]
         public ActionResult<IReadOnlyList<Fine>> GetAll()
         {
-            var fines = FineRepository.GetAllFines();
+            var fines = fineService.GetAllFines();
             if (!fines.Any())
             {
                 return NotFound("No fines found.");
@@ -42,9 +46,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Fine> GetById([FromRoute] int id)
+        public ActionResult<Fine> GetById([FromRoute] Guid id)
         {
-            var fine = FineRepository.GetFineById(id);
+            var fine = fineService.GetFineById(id);
             if (fine == null)
             {
                 return NotFound("Fine not found.");
@@ -53,9 +57,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/pay")]
-        public ActionResult PayFine([FromRoute] int id)
+        public ActionResult PayFine([FromRoute] Guid id)
         {
-            if (!FineRepository.PayFine(id))
+            if (!fineService.PayFine(id))
             {
                 return NotFound("Fine not found.");
             }

@@ -9,11 +9,11 @@ namespace GestionVideoClub.Controllers
     [ApiController]
     public class CopiesController : ControllerBase
     {
-        private readonly ICopyService CopyRepository;
+        private readonly ICopyService copyService;
 
         public CopiesController(ICopyService copyService)
         {
-            CopyRepository = copyService;
+            this.copyService = copyService;
         }
 
         [HttpPost]
@@ -21,19 +21,23 @@ namespace GestionVideoClub.Controllers
         {
             try
             {
-                var copy = CopyRepository.AddCopy(request);
-                return CreatedAtAction(nameof(GetById), new { id = copy.ID }, copy);
+                var copy = copyService.AddCopy(request);
+                return CreatedAtAction(nameof(GetById), new { id = copy.Id }, copy);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
         }
 
         [HttpGet]
         public ActionResult<IReadOnlyList<Copy>> GetAll()
         {
-            var copies = CopyRepository.GetAllCopies();
+            var copies = copyService.GetAllCopies();
             if (!copies.Any())
             {
                 return NotFound("No copies found.");
@@ -42,9 +46,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Copy> GetById([FromRoute] int id)
+        public ActionResult<Copy> GetById([FromRoute] Guid id)
         {
-            var copy = CopyRepository.GetCopyById(id);
+            var copy = copyService.GetCopyById(id);
             if (copy == null)
             {
                 return NotFound("Copy not found.");
@@ -53,9 +57,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/state")]
-        public ActionResult UpdateState([FromRoute] int id, [FromBody] UpdateCopyStateRequest request)
+        public ActionResult UpdateState([FromRoute] Guid id, [FromBody] UpdateCopyStateRequest request)
         {
-            if (!CopyRepository.UpdateCopyState(id, request))
+            if (!copyService.UpdateCopyState(id, request))
             {
                 return NotFound("Copy not found.");
             }
@@ -64,9 +68,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/availability")]
-        public ActionResult UpdateAvailability([FromRoute] int id, [FromBody] UpdateCopyAvailabilityRequest request)
+        public ActionResult UpdateAvailability([FromRoute] Guid id, [FromBody] UpdateCopyAvailabilityRequest request)
         {
-            if (!CopyRepository.UpdateCopyAvailability(id, request))
+            if (!copyService.UpdateCopyAvailability(id, request))
             {
                 return NotFound("Copy not found.");
             }

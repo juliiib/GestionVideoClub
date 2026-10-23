@@ -6,7 +6,7 @@ namespace GestionVideoClub.Domain.Interfaces
     {
         void AddFine(Fine fine);
         IReadOnlyList<Fine> GetAllFines();
-        Fine? GetFineById(int id);
-        void UpdateFine(Fine fine);
+        Fine? GetFineById(Guid id);
+        void SaveChanges();
     }
 }

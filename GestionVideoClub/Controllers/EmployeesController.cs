@@ -1,7 +1,6 @@
 ﻿using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
 using GestionVideoClub.Domain.Entities;
-using GestionVideoClub.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionVideoClub.Controllers
@@ -10,11 +9,11 @@ namespace GestionVideoClub.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly IEmployeeService EmployeeRepository;
+        private readonly IEmployeeService employeeService;
 
         public EmployeesController(IEmployeeService employeeService)
         {
-            EmployeeRepository = employeeService;
+            this.employeeService = employeeService;
         }
 
         [HttpPost]
@@ -22,11 +21,11 @@ namespace GestionVideoClub.Controllers
         {
             try
             {
-                Employee employee = EmployeeRepository.AddEmployee(request);
+                Employee employee = employeeService.AddEmployee(request);
 
-                return CreatedAtAction(nameof(GetById), new { id = employee.ID }, employee);
+                return CreatedAtAction(nameof(GetById), new { id = employee.Id }, employee);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -35,7 +34,7 @@ namespace GestionVideoClub.Controllers
         [HttpGet]
         public ActionResult<IReadOnlyList<Employee>> GetAll()
         {
-            var employees = EmployeeRepository.GetAllEmployees();
+            var employees = employeeService.GetAllEmployees();
             if (!employees.Any())
             {
                 return NotFound("No employees found.");
@@ -44,9 +43,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Employee> GetById([FromRoute] int id)
+        public ActionResult<Employee> GetById([FromRoute] Guid id)
         {
-            var employee = EmployeeRepository.GetEmployeeById(id);
+            var employee = employeeService.GetEmployeeById(id);
             if (employee == null)
             {
                 return NotFound("Employee not found.");
@@ -55,9 +54,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/contact")]
-        public ActionResult UpdateContact([FromRoute] int id, [FromBody] UpdateEmployeeContactRequest request)
+        public ActionResult UpdateContact([FromRoute] Guid id, [FromBody] UpdateEmployeeContactRequest request)
         {
-            if (!EmployeeRepository.UpdateEmployeeContact(id, request))
+            if (!employeeService.UpdateEmployeeContact(id, request))
             {
                 return NotFound("Employee not found.");
             }
@@ -66,9 +65,9 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/job-details")]
-        public ActionResult UpdateJobDetails([FromRoute] int id, [FromBody] UpdateEmployeeJobDetailsRequest request)
+        public ActionResult UpdateJobDetails([FromRoute] Guid id, [FromBody] UpdateEmployeeJobDetailsRequest request)
         {
-            if (!EmployeeRepository.UpdateEmployeeJobDetails(id, request))
+            if (!employeeService.UpdateEmployeeJobDetails(id, request))
             {
                 return NotFound("Employee not found.");
             }

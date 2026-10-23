@@ -1,13 +1,21 @@
 ﻿using GestionVideoClub.Domain.Entities;
 using GestionVideoClub.Domain.Interfaces;
+using GestionVideoClub.Infrastructure.Persistence;
 
 namespace GestionVideoClub.Infrastructure.Repositories
 {
     public class MovieRepository : IMovieRepository
     {
-        private readonly List<Movie> movies = new List<Movie>();
-        public void AddMovie(Movie movie) => movies.Add(movie);
-        public IReadOnlyList<Movie> GetAllMovies() => movies.AsReadOnly();
-        public Movie? GetMovieById(int id) => movies.FirstOrDefault(m => m.ID == id);
+        private readonly VideoClubDbContext context;
+
+        public MovieRepository(VideoClubDbContext context)
+        {
+            this.context = context;
+        }
+
+        public void AddMovie(Movie movie) => context.Movies.Add(movie);
+        public IReadOnlyList<Movie> GetAllMovies() => context.Movies.ToList();
+        public Movie? GetMovieById(Guid id) => context.Movies.FirstOrDefault(m => m.Id == id);
+        public void SaveChanges() => context.SaveChanges();
     }
 }

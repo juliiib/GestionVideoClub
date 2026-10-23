@@ -18,14 +18,15 @@ namespace GestionVideoClub.Application.Services
         {
             var client = new Client(request.Name, request.LastName, request.Dni, request.Phone, request.Address);
             clientRepository.AddClient(client);
+            clientRepository.SaveChanges();
             return client;
         }
 
         public IReadOnlyList<Client> GetAllClients()=> clientRepository.GetAllClients();
 
-        public Client? GetClientById(int id) => clientRepository.GetClientById(id);
+        public Client? GetClientById(Guid id) => clientRepository.GetClientById(id);
 
-        public bool RemoveClient(int id)
+        public bool RemoveClient(Guid id)
         {
             var client = clientRepository.GetClientById(id);
             if (client == null)
@@ -33,21 +34,28 @@ namespace GestionVideoClub.Application.Services
                 return false;
             }
             clientRepository.RemoveClient(client);
+            clientRepository.SaveChanges();
             return true;
         }
 
-        public bool UpdateClient(int id, UpdateClientRequest request)
+        public bool UpdateClient(Guid id, UpdateClientRequest request)
         {
             var client = clientRepository.GetClientById(id);
             if (client == null)
             {
                 return false;
             }
-            
-            client.UpdateAddress(request.Address);
-            client.UpdatePhone(request.Phone);
 
-            clientRepository.UpdateClient(client);
+            if (request.Address != null)
+            {
+                client.UpdateAddress(request.Address);
+            }
+            if (request.Phone != null)
+            {
+                client.UpdatePhone(request.Phone);
+            }
+
+            clientRepository.SaveChanges();
 
             return true;
         }

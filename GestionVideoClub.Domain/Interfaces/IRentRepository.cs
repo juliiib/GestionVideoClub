@@ -6,7 +6,7 @@ namespace GestionVideoClub.Domain.Interfaces
     {
         void AddRent(Rent rent);
         IReadOnlyList<Rent> GetAllRents();
-        Rent? GetRentById(int id);
-        void UpdateRent(Rent rent);
+        Rent? GetRentById(Guid id);
+        void SaveChanges();
     }
 }
