@@ -8,7 +8,7 @@ namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = Policies.EmployeesAndClients)]
     public class CopiesController : ControllerBase
     {
         private readonly ICopyService copyService;
@@ -19,6 +19,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult<Copy> Create([FromBody] CreateCopyRequest request)
         {
             try
@@ -59,6 +60,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/state")]
+        [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult UpdateState([FromRoute] Guid id, [FromBody] UpdateCopyStateRequest request)
         {
             if (!copyService.UpdateCopyState(id, request))
@@ -70,6 +72,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/availability")]
+        [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult UpdateAvailability([FromRoute] Guid id, [FromBody] UpdateCopyAvailabilityRequest request)
         {
             if (!copyService.UpdateCopyAvailability(id, request))

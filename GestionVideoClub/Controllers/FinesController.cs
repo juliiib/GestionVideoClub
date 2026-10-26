@@ -8,7 +8,7 @@ namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = Policies.EmployeesAndClients)]
     public class FinesController : ControllerBase
     {
         private readonly IFineService fineService;
@@ -19,6 +19,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult<Fine> Create([FromBody] CreateFineRequest request)
         {
             try
@@ -59,6 +60,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/pay")]
+        [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult PayFine([FromRoute] Guid id)
         {
             if (!fineService.PayFine(id))

@@ -8,7 +8,7 @@ namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = Policies.EmployeesOnly)]
     public class FormatsController : ControllerBase
     {
         private readonly IFormatService formatService;

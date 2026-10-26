@@ -7,7 +7,7 @@ namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = Policies.EmployeesOnly)]
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeService employeeService;

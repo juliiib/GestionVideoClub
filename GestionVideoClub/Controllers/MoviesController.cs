@@ -8,7 +8,7 @@ namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = Policies.EmployeesAndClients)]
     public class MoviesController : ControllerBase
     {
         private readonly IMovieService movieService;
@@ -19,6 +19,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult<Movie> Create([FromBody] CreateMovieRequest request)
         {
             try

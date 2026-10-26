@@ -1,6 +1,8 @@
 using System.Text;
+using GestionVideoClub;
 using GestionVideoClub.Application.Interfaces;
 using GestionVideoClub.Application.Services;
+using GestionVideoClub.Domain.Entities;
 using GestionVideoClub.Domain.Interfaces;
 using GestionVideoClub.Infrastructure.ExternalServices;
 using GestionVideoClub.Infrastructure.Persistence;
@@ -61,6 +63,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ClockSkew = TimeSpan.Zero
         };
     });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Policies.EmployeesOnly,
+        policy => policy.RequireRole(nameof(Employee)));
+
+    options.AddPolicy(Policies.EmployeesAndClients,
+        policy => policy.RequireRole(nameof(Employee), nameof(Client)));
+});
 
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IClientService, ClientService>();
