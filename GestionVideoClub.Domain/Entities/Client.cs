@@ -2,8 +2,8 @@
 {
     public class Client : Person
     {
-        public Client(string name, string lastName, int dni, string phone, string address)
-            : base(name, lastName, dni, phone, address)
+        public Client(string name, string lastName, int dni, string phone, string address, string email, string passwordHash)
+            : base(name, lastName, dni, phone, address, email, passwordHash)
         {
         }
 

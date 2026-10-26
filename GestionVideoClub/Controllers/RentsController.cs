@@ -1,12 +1,14 @@
 using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
 using GestionVideoClub.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RentsController : ControllerBase
     {
         private readonly IRentService rentService;

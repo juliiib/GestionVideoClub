@@ -5,8 +5,8 @@
         public string Shift { get; private set; }
         public decimal Salary { get; private set; }
 
-        public Employee(string name, string lastName, int dni, string phone, string address, string shift, decimal salary)
-            : base(name, lastName, dni, phone, address)
+        public Employee(string name, string lastName, int dni, string phone, string address, string email, string passwordHash, string shift, decimal salary)
+            : base(name, lastName, dni, phone, address, email, passwordHash)
         {
 
             if (string.IsNullOrWhiteSpace(shift))

@@ -8,15 +8,25 @@ namespace GestionVideoClub.Application.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepository employeeRepository;
+        private readonly IUserRepository userRepository;
+        private readonly IPasswordHashService passwordHashService;
 
-        public EmployeeService(IEmployeeRepository employeeRepository)
+        public EmployeeService(IEmployeeRepository employeeRepository, IUserRepository userRepository, IPasswordHashService passwordHashService)
         {
             this.employeeRepository = employeeRepository;
+            this.userRepository = userRepository;
+            this.passwordHashService = passwordHashService;
         }
 
         public Employee AddEmployee(CreateEmployeeRequest request)
         {
-            var employee = new Employee(request.Name, request.LastName, request.Dni, request.Phone, request.Address, request.Shift, request.Salary);
+            if (userRepository.EmailExists(request.Email))
+            {
+                throw new InvalidOperationException("Email already exists.");
+            }
+
+            var passwordHash = passwordHashService.Hash(request.Password);
+            var employee = new Employee(request.Name, request.LastName, request.Dni, request.Phone, request.Address, request.Email, passwordHash, request.Shift, request.Salary);
             employeeRepository.AddEmployee(employee);
             employeeRepository.SaveChanges();
             return employee;
