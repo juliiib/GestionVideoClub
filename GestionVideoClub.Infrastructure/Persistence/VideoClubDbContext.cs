@@ -94,6 +94,9 @@ namespace GestionVideoClub.Infrastructure.Persistence
             // Precisión explícita para montos monetarios: SQL Server necesita (precision, scale) definidos.
             modelBuilder.Entity<Employee>().Property(e => e.Salary).HasPrecision(18, 2);
             modelBuilder.Entity<Fine>().Property(f => f.Amount).HasPrecision(18, 2);
+
+            // La misma película (mismo ImdbId) no puede cargarse dos veces.
+            modelBuilder.Entity<Movie>().HasIndex(m => m.ImdbId).IsUnique();
         }
     }
 }

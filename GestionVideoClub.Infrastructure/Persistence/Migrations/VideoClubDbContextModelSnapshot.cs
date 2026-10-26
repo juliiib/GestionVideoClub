@@ -124,14 +124,27 @@ namespace GestionVideoClub.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImdbId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Plot")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PosterUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("YearRelease")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ImdbId")
+                        .IsUnique();
 
                     b.ToTable("Movies");
                 });

@@ -73,6 +73,22 @@ builder.Services.AddAuthorization(options =>
         policy => policy.RequireRole(nameof(Employee), nameof(Client)));
 });
 
+builder.Services.Configure<OmdbSettings>(builder.Configuration.GetSection(OmdbSettings.SectionName));
+
+var omdbSettings = builder.Configuration.GetSection(OmdbSettings.SectionName).Get<OmdbSettings>();
+if (omdbSettings == null || string.IsNullOrWhiteSpace(omdbSettings.ApiKey))
+{
+    throw new InvalidOperationException(
+        "La sección 'Omdb' (o su clave 'ApiKey') no está configurada. Configurala con: " +
+        "dotnet user-secrets set \"Omdb:ApiKey\" \"<tu-key>\" --project GestionVideoClub");
+}
+
+builder.Services.AddHttpClient<IMovieInfoService, OmdbMovieInfoService>(client =>
+{
+    client.BaseAddress = new Uri(omdbSettings.BaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IClientService, ClientService>();
 
