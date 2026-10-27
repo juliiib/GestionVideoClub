@@ -1,12 +1,13 @@
 ﻿using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
-using GestionVideoClub.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = Policies.EmployeesOnly)]
     public class ClientsController : ControllerBase
     {
         private readonly IClientService clientService;
@@ -17,40 +18,44 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Client> Create([FromBody] CreateClientRequest request)
+        public ActionResult<ClientResponse> Create([FromBody] CreateClientRequest request)
         {
             try
             {
-                Client client = clientService.AddClient(request);
+                var client = clientService.AddClient(request);
 
-                return CreatedAtAction(nameof(GetById), new { id = client.Id }, client);
+                return CreatedAtAction(nameof(GetById), new { id = client.Id }, ClientResponse.From(client));
             }
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<Client>> GetAll()
+        public ActionResult<IReadOnlyList<ClientResponse>> GetAll()
         {
             var clients = clientService.GetAllClients();
             if (!clients.Any())
             {
                 return NotFound("No clients found.");
             }
-            return Ok(clients);
+            return Ok(clients.Select(ClientResponse.From));
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Client> GetById([FromRoute] Guid id)
+        public ActionResult<ClientResponse> GetById([FromRoute] Guid id)
         {
             var client = clientService.GetClientById(id);
             if (client == null)
             {
                 return NotFound("Client not found.");
             }
-            return Ok(client);
+            return Ok(ClientResponse.From(client));
         }
 
         [HttpPatch("{id}")]

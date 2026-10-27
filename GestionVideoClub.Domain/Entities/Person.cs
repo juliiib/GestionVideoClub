@@ -8,8 +8,10 @@
         public int DNI { get; private set; }
         public string Phone { get; private set; }
         public string Address { get; private set; }
+        public string Email { get; private set; }
+        public string PasswordHash { get; private set; }
 
-        public Person(string name, string lastName, int dni, string phone, string address)
+        public Person(string name, string lastName, int dni, string phone, string address, string email, string passwordHash)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -31,6 +33,14 @@
             {
                 throw new ArgumentException("Address cannot be null or empty.", nameof(address));
             }
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new ArgumentException("Email cannot be null or empty.", nameof(email));
+            }
+            if (string.IsNullOrWhiteSpace(passwordHash))
+            {
+                throw new ArgumentException("Password hash cannot be null or empty.", nameof(passwordHash));
+            }
 
             Id = Guid.NewGuid();
             Name = name;
@@ -38,6 +48,8 @@
             DNI = dni;
             Phone = phone;
             Address = address;
+            Email = email;
+            PasswordHash = passwordHash;
         }
 
         protected Person()
@@ -46,6 +58,8 @@
             LastName = string.Empty;
             Phone = string.Empty;
             Address = string.Empty;
+            Email = string.Empty;
+            PasswordHash = string.Empty;
         }
 
         public void UpdatePhone(string newPhone)

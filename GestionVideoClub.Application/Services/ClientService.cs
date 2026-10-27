@@ -8,15 +8,25 @@ namespace GestionVideoClub.Application.Services
     public class ClientService : IClientService
     {
         private readonly IClientRepository clientRepository;
+        private readonly IUserRepository userRepository;
+        private readonly IPasswordHashService passwordHashService;
 
-        public ClientService(IClientRepository clientRepository)
+        public ClientService(IClientRepository clientRepository, IUserRepository userRepository, IPasswordHashService passwordHashService)
         {
             this.clientRepository = clientRepository;
+            this.userRepository = userRepository;
+            this.passwordHashService = passwordHashService;
         }
 
         public Client AddClient(CreateClientRequest request)
         {
-            var client = new Client(request.Name, request.LastName, request.Dni, request.Phone, request.Address);
+            if (userRepository.EmailExists(request.Email))
+            {
+                throw new InvalidOperationException("Email already exists.");
+            }
+
+            var passwordHash = passwordHashService.Hash(request.Password);
+            var client = new Client(request.Name, request.LastName, request.Dni, request.Phone, request.Address, request.Email, passwordHash);
             clientRepository.AddClient(client);
             clientRepository.SaveChanges();
             return client;

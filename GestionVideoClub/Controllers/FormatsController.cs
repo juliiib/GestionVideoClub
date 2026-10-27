@@ -1,12 +1,14 @@
 using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
 using GestionVideoClub.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = Policies.EmployeesOnly)]
     public class FormatsController : ControllerBase
     {
         private readonly IFormatService formatService;

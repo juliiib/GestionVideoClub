@@ -22,36 +22,6 @@ namespace GestionVideoClub.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GestionVideoClub.Domain.Entities.Client", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DNI")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Clients");
-                });
-
             modelBuilder.Entity("GestionVideoClub.Domain.Entities.Copy", b =>
                 {
                     b.Property<Guid>("Id")
@@ -85,44 +55,6 @@ namespace GestionVideoClub.Infrastructure.Persistence.Migrations
                     b.HasIndex("MovieId");
 
                     b.ToTable("Copies");
-                });
-
-            modelBuilder.Entity("GestionVideoClub.Domain.Entities.Employee", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DNI")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Salary")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Shift")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("GestionVideoClub.Domain.Entities.Fine", b =>
@@ -192,8 +124,18 @@ namespace GestionVideoClub.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImdbId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Plot")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PosterUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("YearRelease")
@@ -201,7 +143,50 @@ namespace GestionVideoClub.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ImdbId")
+                        .IsUnique();
+
                     b.ToTable("Movies");
+                });
+
+            modelBuilder.Entity("GestionVideoClub.Domain.Entities.Person", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DNI")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable((string)null);
+
+                    b.UseTpcMappingStrategy();
                 });
 
             modelBuilder.Entity("GestionVideoClub.Domain.Entities.Rent", b =>
@@ -240,6 +225,49 @@ namespace GestionVideoClub.Infrastructure.Persistence.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("Rents");
+                });
+
+            modelBuilder.Entity("GestionVideoClub.Domain.Entities.Client", b =>
+                {
+                    b.HasBaseType("GestionVideoClub.Domain.Entities.Person");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("GestionVideoClub.Domain.Entities.Employee", b =>
+                {
+                    b.HasBaseType("GestionVideoClub.Domain.Entities.Person");
+
+                    b.Property<decimal>("Salary")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Shift")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Employees");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("9f6f6b1e-6b9a-4e9d-9c2e-9b7f6a2d4e10"),
+                            Address = "Sin domicilio",
+                            DNI = 1,
+                            Email = "admin@videoclub.com",
+                            LastName = "VideoClub",
+                            Name = "Admin",
+                            PasswordHash = "$2a$11$2b/Af2TsTkMq5.WzDc5h3eRJ9gqIpjC6.UiFRD9Gy3gaTmnAUVqU6",
+                            Phone = "0000000000",
+                            Salary = 1m,
+                            Shift = "Mañana"
+                        });
                 });
 
             modelBuilder.Entity("GestionVideoClub.Domain.Entities.Copy", b =>

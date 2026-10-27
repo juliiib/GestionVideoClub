@@ -1,12 +1,14 @@
 using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
 using GestionVideoClub.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = Policies.EmployeesAndClients)]
     public class RentsController : ControllerBase
     {
         private readonly IRentService rentService;
@@ -17,6 +19,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult<Rent> Create([FromBody] CreateRentRequest request)
         {
             try
@@ -61,6 +64,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/return")]
+        [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult ReturnCopy([FromRoute] Guid id, [FromBody] ReturnRentRequest request)
         {
             if (!rentService.ReturnCopy(id, request))

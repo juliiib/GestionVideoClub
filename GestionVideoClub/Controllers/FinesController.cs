@@ -1,12 +1,14 @@
 using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
 using GestionVideoClub.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = Policies.EmployeesAndClients)]
     public class FinesController : ControllerBase
     {
         private readonly IFineService fineService;
@@ -17,6 +19,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult<Fine> Create([FromBody] CreateFineRequest request)
         {
             try
@@ -57,6 +60,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPatch("{id}/pay")]
+        [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult PayFine([FromRoute] Guid id)
         {
             if (!fineService.PayFine(id))

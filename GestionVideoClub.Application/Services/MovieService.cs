@@ -8,18 +8,28 @@ namespace GestionVideoClub.Application.Services
     public class MovieService : IMovieService
     {
         private readonly IMovieRepository movieRepository;
+        private readonly IMovieInfoService movieInfoService;
 
-        public MovieService(IMovieRepository movieRepository)
+        public MovieService(IMovieRepository movieRepository, IMovieInfoService movieInfoService)
         {
             this.movieRepository = movieRepository;
+            this.movieInfoService = movieInfoService;
         }
 
-        public Movie AddMovie(CreateMovieRequest request)
+        public async Task<MovieResponse> AddMovieAsync(CreateMovieRequest request)
         {
-            var movie = new Movie(request.Name, request.Genre, request.Duration, request.Clasification, request.YearRelease);
+            var info = await movieInfoService.SearchByTitleAsync(request.Title, request.Year)
+                ?? throw new KeyNotFoundException($"No se encontró la película '{request.Title}' en OMDb.");
+
+            if (movieRepository.ExistsByImdbId(info.ImdbId))
+            {
+                throw new InvalidOperationException("La película ya está cargada.");
+            }
+
+            var movie = new Movie(info.ImdbId, info.Title, info.Genre, info.DurationMinutes, request.Clasification, info.Year, info.Plot, info.PosterUrl);
             movieRepository.AddMovie(movie);
             movieRepository.SaveChanges();
-            return movie;
+            return MovieResponse.From(movie);
         }
 
         public IReadOnlyList<Movie> GetAllMovies() => movieRepository.GetAllMovies();

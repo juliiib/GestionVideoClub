@@ -1,12 +1,13 @@
 ﻿using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
-using GestionVideoClub.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionVideoClub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = Policies.EmployeesOnly)]
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeService employeeService;
@@ -17,40 +18,44 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Employee> Create([FromBody] CreateEmployeeRequest request)
+        public ActionResult<EmployeeResponse> Create([FromBody] CreateEmployeeRequest request)
         {
             try
             {
-                Employee employee = employeeService.AddEmployee(request);
+                var employee = employeeService.AddEmployee(request);
 
-                return CreatedAtAction(nameof(GetById), new { id = employee.Id }, employee);
+                return CreatedAtAction(nameof(GetById), new { id = employee.Id }, EmployeeResponse.From(employee));
             }
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<Employee>> GetAll()
+        public ActionResult<IReadOnlyList<EmployeeResponse>> GetAll()
         {
             var employees = employeeService.GetAllEmployees();
             if (!employees.Any())
             {
                 return NotFound("No employees found.");
             }
-            return Ok(employees);
+            return Ok(employees.Select(EmployeeResponse.From));
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Employee> GetById([FromRoute] Guid id)
+        public ActionResult<EmployeeResponse> GetById([FromRoute] Guid id)
         {
             var employee = employeeService.GetEmployeeById(id);
             if (employee == null)
             {
                 return NotFound("Employee not found.");
             }
-            return Ok(employee);
+            return Ok(EmployeeResponse.From(employee));
         }
 
         [HttpPatch("{id}/contact")]
