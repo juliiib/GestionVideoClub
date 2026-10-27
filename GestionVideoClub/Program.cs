@@ -6,6 +6,7 @@ using GestionVideoClub.Domain.Entities;
 using GestionVideoClub.Domain.Interfaces;
 using GestionVideoClub.Infrastructure.ExternalServices;
 using GestionVideoClub.Infrastructure.Persistence;
+using GestionVideoClub.Infrastructure.Persistence.Seed;
 using GestionVideoClub.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -121,6 +122,17 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    // VideoClubDbContext e IPasswordHashService están registrados como Scoped, pero acá, en el
+    // arranque, no hay un request HTTP que abra un scope por nosotros. CreateScope() crea uno a
+    // mano para poder resolverlos, y se descarta (using) apenas termina de sembrar los datos.
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<VideoClubDbContext>();
+        var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHashService>();
+        await context.Database.MigrateAsync();
+        await DbSeeder.SeedAsync(context, hasher);
+    }
 }
 
 app.UseHttpsRedirection();
@@ -130,4 +142,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
