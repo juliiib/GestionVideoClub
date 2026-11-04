@@ -20,7 +20,7 @@ namespace GestionVideoClub.Application.Services
             this.employeeRepository = employeeRepository;
         }
 
-        public Rent AddRent(CreateRentRequest request)
+        public RentResponse AddRent(CreateRentRequest request, Guid employeeId)
         {
             var copy = copyRepository.GetCopyById(request.CopyId)
                 ?? throw new KeyNotFoundException("Copy not found.");
@@ -33,7 +33,7 @@ namespace GestionVideoClub.Application.Services
             var client = clientRepository.GetClientById(request.ClientId)
                 ?? throw new KeyNotFoundException("Client not found.");
 
-            var employee = employeeRepository.GetEmployeeById(request.EmployeeId)
+            var employee = employeeRepository.GetEmployeeById(employeeId)
                 ?? throw new KeyNotFoundException("Employee not found.");
 
             var rent = new Rent(request.RentDate, request.ExpectedReturnDate, copy, client, employee);
@@ -41,32 +41,26 @@ namespace GestionVideoClub.Application.Services
 
             rentRepository.AddRent(rent);
             rentRepository.SaveChanges();
-            return rent;
+            return RentResponse.From(rent);
         }
 
-        public IReadOnlyList<Rent> GetAllRents() => rentRepository.GetAllRents();
+        public IReadOnlyList<RentResponse> GetAllRents() => rentRepository.GetAllRents().Select(RentResponse.From).ToList();
 
-        public Rent? GetRentById(Guid id) => rentRepository.GetRentById(id);
+        public RentResponse? GetRentById(Guid id)
+        {
+            var rent = rentRepository.GetRentById(id);
+            return rent == null ? null : RentResponse.From(rent);
+        }
 
         public bool ReturnCopy(Guid id, ReturnRentRequest request)
         {
             var rent = rentRepository.GetRentById(id);
-            if (rent == null || rent.State != Rent.RentState.Active)
+            if (rent == null)
             {
                 return false;
             }
 
-            if (request.ReturnDate > rent.ExpectedReturnDate)
-            {
-                rent.ReturnCopy(Rent.RentState.Overdue, request.ReturnDate);
-            }
-            else
-            {
-                rent.ReturnCopy(Rent.RentState.Returned, request.ReturnDate);
-            }
-
-            rent.Copy.SetAvailability(true);
-
+            rent.Return(request.ReturnDate);
             rentRepository.SaveChanges();
             return true;
         }

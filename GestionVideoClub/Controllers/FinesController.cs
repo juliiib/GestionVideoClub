@@ -1,6 +1,5 @@
 using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
-using GestionVideoClub.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +19,7 @@ namespace GestionVideoClub.Controllers
 
         [HttpPost]
         [Authorize(Policy = Policies.EmployeesOnly)]
-        public ActionResult<Fine> Create([FromBody] CreateFineRequest request)
+        public ActionResult<FineResponse> Create([FromBody] CreateFineRequest request)
         {
             try
             {
@@ -38,7 +37,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<Fine>> GetAll()
+        public ActionResult<IReadOnlyList<FineResponse>> GetAll()
         {
             var fines = fineService.GetAllFines();
             if (!fines.Any())
@@ -49,7 +48,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Fine> GetById([FromRoute] Guid id)
+        public ActionResult<FineResponse> GetById([FromRoute] Guid id)
         {
             var fine = fineService.GetFineById(id);
             if (fine == null)
@@ -63,12 +62,19 @@ namespace GestionVideoClub.Controllers
         [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult PayFine([FromRoute] Guid id)
         {
-            if (!fineService.PayFine(id))
+            try
             {
-                return NotFound("Fine not found.");
-            }
+                if (!fineService.PayFine(id))
+                {
+                    return NotFound("Fine not found.");
+                }
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
     }
 }

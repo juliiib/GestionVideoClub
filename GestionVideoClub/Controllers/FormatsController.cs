@@ -1,6 +1,5 @@
 using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
-using GestionVideoClub.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +18,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Format> Create([FromBody] CreateFormatRequest request)
+        public ActionResult<FormatResponse> Create([FromBody] CreateFormatRequest request)
         {
             try
             {
@@ -33,7 +32,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<Format>> GetAll()
+        public ActionResult<IReadOnlyList<FormatResponse>> GetAll()
         {
             var formats = formatService.GetAllFormats();
             if (!formats.Any())
@@ -44,7 +43,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Format> GetById([FromRoute] Guid id)
+        public ActionResult<FormatResponse> GetById([FromRoute] Guid id)
         {
             var format = formatService.GetFormatById(id);
             if (format == null)

@@ -32,8 +32,12 @@ namespace GestionVideoClub.Application.Services
             return MovieResponse.From(movie);
         }
 
-        public IReadOnlyList<Movie> GetAllMovies() => movieRepository.GetAllMovies();
+        public IReadOnlyList<MovieResponse> GetAllMovies() => movieRepository.GetAllMovies().Select(MovieResponse.From).ToList();
 
-        public Movie? GetMovieById(Guid id) => movieRepository.GetMovieById(id);
+        public MovieResponse? GetMovieById(Guid id)
+        {
+            var movie = movieRepository.GetMovieById(id);
+            return movie == null ? null : MovieResponse.From(movie);
+        }
     }
 }

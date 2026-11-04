@@ -1,12 +1,11 @@
 using GestionVideoClub.Application.DTOs;
-using GestionVideoClub.Domain.Entities;
 
 namespace GestionVideoClub.Application.Interfaces
 {
     public interface IFormatService
     {
-        Format AddFormat(CreateFormatRequest request);
-        IReadOnlyList<Format> GetAllFormats();
-        Format? GetFormatById(Guid id);
+        FormatResponse AddFormat(CreateFormatRequest request);
+        IReadOnlyList<FormatResponse> GetAllFormats();
+        FormatResponse? GetFormatById(Guid id);
     }
 }

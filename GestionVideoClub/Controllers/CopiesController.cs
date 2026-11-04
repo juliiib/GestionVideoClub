@@ -1,6 +1,5 @@
 using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
-using GestionVideoClub.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +19,7 @@ namespace GestionVideoClub.Controllers
 
         [HttpPost]
         [Authorize(Policy = Policies.EmployeesOnly)]
-        public ActionResult<Copy> Create([FromBody] CreateCopyRequest request)
+        public ActionResult<CopyResponse> Create([FromBody] CreateCopyRequest request)
         {
             try
             {
@@ -38,7 +37,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<Copy>> GetAll()
+        public ActionResult<IReadOnlyList<CopyResponse>> GetAll()
         {
             var copies = copyService.GetAllCopies();
             if (!copies.Any())
@@ -49,7 +48,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Copy> GetById([FromRoute] Guid id)
+        public ActionResult<CopyResponse> GetById([FromRoute] Guid id)
         {
             var copy = copyService.GetCopyById(id);
             if (copy == null)
