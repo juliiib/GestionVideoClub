@@ -89,6 +89,7 @@ namespace GestionVideoClub.Infrastructure.Persistence
             modelBuilder.Entity<Rent>().Navigation(r => r.Copy).AutoInclude();
             modelBuilder.Entity<Rent>().Navigation(r => r.Client).AutoInclude();
             modelBuilder.Entity<Rent>().Navigation(r => r.Employee).AutoInclude();
+            modelBuilder.Entity<Rent>().Navigation(r => r.Fine).AutoInclude();
             modelBuilder.Entity<Fine>().Navigation(f => f.Rent).AutoInclude();
 
             // Precisión explícita para montos monetarios: SQL Server necesita (precision, scale) definidos.

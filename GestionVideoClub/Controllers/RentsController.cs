@@ -1,8 +1,9 @@
+using System.Security.Claims;
 using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
-using GestionVideoClub.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace GestionVideoClub.Controllers
 {
@@ -20,11 +21,20 @@ namespace GestionVideoClub.Controllers
 
         [HttpPost]
         [Authorize(Policy = Policies.EmployeesOnly)]
-        public ActionResult<Rent> Create([FromBody] CreateRentRequest request)
+        public ActionResult<RentResponse> Create([FromBody] CreateRentRequest request)
         {
+            // El empleado que registra el alquiler es el logueado, no uno que mande el cliente
+            // en el body: se toma del claim de identidad del token ("sub"), que el handler de
+            // JWT mapea a ClaimTypes.NameIdentifier.
+            var employeeIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            if (employeeIdClaim == null || !Guid.TryParse(employeeIdClaim, out var employeeId))
+            {
+                return Unauthorized("No se pudo identificar al empleado autenticado.");
+            }
+
             try
             {
-                var rent = rentService.AddRent(request);
+                var rent = rentService.AddRent(request, employeeId);
                 return CreatedAtAction(nameof(GetById), new { id = rent.Id }, rent);
             }
             catch (ArgumentException ex)
@@ -42,7 +52,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<Rent>> GetAll()
+        public ActionResult<IReadOnlyList<RentResponse>> GetAll()
         {
             var rents = rentService.GetAllRents();
             if (!rents.Any())
@@ -53,7 +63,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Rent> GetById([FromRoute] Guid id)
+        public ActionResult<RentResponse> GetById([FromRoute] Guid id)
         {
             var rent = rentService.GetRentById(id);
             if (rent == null)
@@ -67,12 +77,23 @@ namespace GestionVideoClub.Controllers
         [Authorize(Policy = Policies.EmployeesOnly)]
         public ActionResult ReturnCopy([FromRoute] Guid id, [FromBody] ReturnRentRequest request)
         {
-            if (!rentService.ReturnCopy(id, request))
+            try
             {
-                return NotFound("Rent not found.");
-            }
+                if (!rentService.ReturnCopy(id, request))
+                {
+                    return NotFound("Rent not found.");
+                }
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
     }
 }

@@ -45,10 +45,25 @@
             Employee = null!;
         }
 
-        public void ReturnCopy(RentState newState, DateTime returnDate)
+        public void Return(DateTime returnDate)
         {
-            State = newState;
+            if (State != RentState.Active)
+            {
+                throw new InvalidOperationException("La renta ya fue devuelta.");
+            }
+
+            if (returnDate < RentDate)
+            {
+                throw new ArgumentException("La fecha de devolución no puede ser anterior al alquiler.");
+            }
+
             ReturnDate = returnDate;
+            State = returnDate > ExpectedReturnDate ? RentState.Overdue : RentState.Returned;
+
+            if (Copy.State != Copy.CopyState.damaged)
+            {
+                Copy.SetAvailability(true);
+            }
         }
     }
 }

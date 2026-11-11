@@ -1,6 +1,5 @@
 ﻿using GestionVideoClub.Application.DTOs;
 using GestionVideoClub.Application.Interfaces;
-using GestionVideoClub.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,7 +46,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<Movie>> GetAll()
+        public ActionResult<IReadOnlyList<MovieResponse>> GetAll()
         {
             var movies = movieService.GetAllMovies();
             if (!movies.Any())
@@ -58,7 +57,7 @@ namespace GestionVideoClub.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Movie> GetById([FromRoute] Guid id)
+        public ActionResult<MovieResponse> GetById([FromRoute] Guid id)
         {
             var movie = movieService.GetMovieById(id);
             if (movie == null)

@@ -77,21 +77,18 @@ namespace GestionVideoClub.Infrastructure.Persistence.Seed
 
             // Rentas devueltas a tiempo: se devuelven antes de la fecha esperada y la copia vuelve a estar disponible.
             var rent3 = new Rent(today.AddDays(-10), today.AddDays(-7), intCopy1, client3, employee2);
-            rent3.ReturnCopy(Rent.RentState.Returned, today.AddDays(-8));
-            intCopy1.SetAvailability(true);
+            // Rent.Return decide el estado (Returned/Overdue) y libera la copia; no hace falta tocarla acá.
+            rent3.Return(today.AddDays(-8));
 
             var rent4 = new Rent(today.AddDays(-10), today.AddDays(-7), godCopy1, client4, admin);
-            rent4.ReturnCopy(Rent.RentState.Returned, today.AddDays(-8));
-            godCopy1.SetAvailability(true);
+            rent4.Return(today.AddDays(-8));
 
             // Rentas devueltas tarde: la devolución ocurre después de la fecha esperada (Overdue).
             var rent5 = new Rent(today.AddDays(-10), today.AddDays(-7), pulCopy1, client5, employee1);
-            rent5.ReturnCopy(Rent.RentState.Overdue, today.AddDays(-2));
-            pulCopy1.SetAvailability(true);
+            rent5.Return(today.AddDays(-2));
 
             var rent6 = new Rent(today.AddDays(-12), today.AddDays(-7), secCopy1, client1, employee2);
-            rent6.ReturnCopy(Rent.RentState.Overdue, today.AddDays(-1));
-            secCopy1.SetAvailability(true);
+            rent6.Return(today.AddDays(-1));
 
             context.Rents.AddRange(rent1, rent2, rent3, rent4, rent5, rent6);
 

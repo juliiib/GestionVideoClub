@@ -18,7 +18,7 @@ namespace GestionVideoClub.Application.Services
             this.formatRepository = formatRepository;
         }
 
-        public Copy AddCopy(CreateCopyRequest request)
+        public CopyResponse AddCopy(CreateCopyRequest request)
         {
             var movie = movieRepository.GetMovieById(request.MovieId)
                 ?? throw new KeyNotFoundException("Movie not found.");
@@ -29,12 +29,16 @@ namespace GestionVideoClub.Application.Services
             var copy = new Copy(request.InternalCode, request.State, request.Location, request.IsAvailable, movie, format);
             copyRepository.AddCopy(copy);
             copyRepository.SaveChanges();
-            return copy;
+            return CopyResponse.From(copy);
         }
 
-        public IReadOnlyList<Copy> GetAllCopies() => copyRepository.GetAllCopies();
+        public IReadOnlyList<CopyResponse> GetAllCopies() => copyRepository.GetAllCopies().Select(CopyResponse.From).ToList();
 
-        public Copy? GetCopyById(Guid id) => copyRepository.GetCopyById(id);
+        public CopyResponse? GetCopyById(Guid id)
+        {
+            var copy = copyRepository.GetCopyById(id);
+            return copy == null ? null : CopyResponse.From(copy);
+        }
 
         public bool UpdateCopyState(Guid id, UpdateCopyStateRequest request)
         {

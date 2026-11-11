@@ -14,16 +14,20 @@ namespace GestionVideoClub.Application.Services
             this.formatRepository = formatRepository;
         }
 
-        public Format AddFormat(CreateFormatRequest request)
+        public FormatResponse AddFormat(CreateFormatRequest request)
         {
             var format = new Format(request.Name, request.ImageQuality, request.AdditionalCost);
             formatRepository.AddFormat(format);
             formatRepository.SaveChanges();
-            return format;
+            return FormatResponse.From(format);
         }
 
-        public IReadOnlyList<Format> GetAllFormats() => formatRepository.GetAllFormats();
+        public IReadOnlyList<FormatResponse> GetAllFormats() => formatRepository.GetAllFormats().Select(FormatResponse.From).ToList();
 
-        public Format? GetFormatById(Guid id) => formatRepository.GetFormatById(id);
+        public FormatResponse? GetFormatById(Guid id)
+        {
+            var format = formatRepository.GetFormatById(id);
+            return format == null ? null : FormatResponse.From(format);
+        }
     }
 }
