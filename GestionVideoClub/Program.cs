@@ -116,11 +116,11 @@ builder.Services.AddScoped<IPasswordHashService, BCryptPasswordHashService>();
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
     // VideoClubDbContext e IPasswordHashService están registrados como Scoped, pero acá, en el
     // arranque, no hay un request HTTP que abra un scope por nosotros. CreateScope() crea uno a
     // mano para poder resolverlos, y se descarta (using) apenas termina de sembrar los datos.

@@ -1,0 +1,57 @@
+name: CI/CD Azure App Service
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: 'gestion-videoclub-api'
+  DOTNET_VERSION: '10.0.x'
+  SOLUTION: 'GestionVideoClub.slnx'
+  STARTUP_PROJECT: 'GestionVideoClub/GestionVideoClub.Presentation.csproj'
+  MIGRATIONS_PROJECT: 'GestionVideoClub.Infrastructure/GestionVideoClub.Infrastructure.csproj'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION }}
+
+      - name: Build
+        run: dotnet build ${{ env.SOLUTION }} --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish ${{ env.STARTUP_PROJECT }} --configuration Release --no-build --output ./publish
+
+      - name: Install dotnet-ef
+        if: github.event_name != 'pull_request'
+        run: dotnet tool update --global dotnet-ef || dotnet tool install --global dotnet-ef
+
+      - name: Apply database migrations
+        if: github.event_name != 'pull_request'
+        run: dotnet ef database update --project ${{ env.MIGRATIONS_PROJECT }} --startup-project ${{ env.STARTUP_PROJECT }} --connection "$DB_CONNECTION_STRING"
+        env:
+          DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+          Omdb__ApiKey: migration-placeholder
+
+      - name: Deploy to Azure App Service
+        if: github.event_name != 'pull_request'
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./publish
