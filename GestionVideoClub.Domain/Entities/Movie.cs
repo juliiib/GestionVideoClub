@@ -22,7 +22,7 @@
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException("Name cannot be null or empty.", nameof(name));
+                throw new ArgumentException("Name cannot be null or empty.", nameof(name))
             }
 
             if (string.IsNullOrWhiteSpace(genre))
