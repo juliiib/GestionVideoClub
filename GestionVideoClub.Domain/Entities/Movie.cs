@@ -11,8 +11,9 @@
         public int YearRelease { get; private set; }
         public string? Plot { get; private set; }
         public string? PosterUrl { get; private set; }
+        public string? Country { get; set; }
 
-        public Movie(string imdbId, string name, string genre, int duration, int clasification, int yearRelease, string? plot, string? posterUrl)
+        public Movie(string imdbId, string name, string genre, int duration, int clasification, int yearRelease, string? plot, string? posterUrl, string? country = null)
         {
             if (string.IsNullOrWhiteSpace(imdbId))
             {
@@ -52,6 +53,7 @@
             YearRelease = yearRelease;
             Plot = plot;
             PosterUrl = posterUrl;
+            Country = country;
         }
 
         private Movie()
