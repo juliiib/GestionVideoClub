@@ -26,7 +26,7 @@ namespace GestionVideoClub.Application.Services
                 throw new InvalidOperationException("La película ya está cargada.");
             }
 
-            var movie = new Movie(info.ImdbId, info.Title, info.Genre, info.DurationMinutes, request.Clasification, info.Year, info.Plot, info.PosterUrl);
+            var movie = new Movie(info.ImdbId, info.Title, info.Genre, info.DurationMinutes, request.Clasification, info.Year, info.Plot, info.PosterUrl, request.Country);
             movieRepository.AddMovie(movie);
             movieRepository.SaveChanges();
             return MovieResponse.From(movie);

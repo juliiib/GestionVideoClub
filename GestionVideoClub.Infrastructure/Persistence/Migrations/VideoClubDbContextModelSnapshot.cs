@@ -117,6 +117,9 @@ namespace GestionVideoClub.Infrastructure.Persistence.Migrations
                     b.Property<int>("Clasification")
                         .HasColumnType("int");
 
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Duration")
                         .HasColumnType("int");
 
