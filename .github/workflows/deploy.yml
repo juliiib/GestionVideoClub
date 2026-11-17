@@ -43,9 +43,9 @@ jobs:
 
       - name: Apply database migrations
         if: github.event_name != 'pull_request'
-        run: dotnet ef database update --project ${{ env.MIGRATIONS_PROJECT }} --startup-project ${{ env.STARTUP_PROJECT }} --connection "$DB_CONNECTION_STRING"
+        run: dotnet ef database update --project ${{ env.MIGRATIONS_PROJECT }} --startup-project ${{ env.STARTUP_PROJECT }}
         env:
-          DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+          ConnectionStrings__GestionVideoClubDb: ${{ secrets.DB_CONNECTION_STRING }}
           Omdb__ApiKey: migration-placeholder
 
       - name: Deploy to Azure App Service
