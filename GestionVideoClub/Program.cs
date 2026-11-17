@@ -34,8 +34,11 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-var connectionString = builder.Configuration.GetConnectionString("GestionVideoClubDb")
-    ?? throw new InvalidOperationException("La connection string 'GestionVideoClubDb' no está configurada.");
+var connectionString = builder.Configuration.GetConnectionString("GestionVideoClubDb");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("La connection string 'GestionVideoClubDb' no está configurada.");
+}
 
 builder.Services.AddDbContext<VideoClubDbContext>(o => o.UseSqlServer(connectionString));
 
