@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: 'gestion-videoclub-api'
+  AZURE_WEBAPP_NAME: 'app-gestionvideoclub-bruge'
   DOTNET_VERSION: '10.0.x'
   SOLUTION: 'GestionVideoClub.slnx'
   STARTUP_PROJECT: 'GestionVideoClub/GestionVideoClub.Presentation.csproj'
